@@ -1,13 +1,25 @@
 
+import javax.swing.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.nio.file.Path;
 
-public class Encoder {
+public class Coder {
 
-    public static void encode(File file) throws IOException {
+    private File file;
+    private JLabel jLabel;
+    private JProgressBar progressBar;
+
+    public Coder(File file){
+
+        this.file = file;
+
+
+    }
+
+
+    public void encode() throws IOException {
         String mime = Files.probeContentType(file.toPath());
         if (!mime.equals("text/plain")) {
             System.out.println("ERROR: Invalid File Type");
@@ -53,9 +65,11 @@ public class Encoder {
 
         String compressed = header.toString() + encoded.toString();
         writeToFile(compressed, file.getName()+".cmp");
+
+
     }
 
-    private static void dfs(Node tree, String[] encodingMap, String path) {
+    private void dfs(Node tree, String[] encodingMap, String path) {
         if (tree == null) return;
 
         if (tree.left == null && tree.right == null) encodingMap[tree.character] = path;
@@ -63,7 +77,7 @@ public class Encoder {
         dfs(tree.right, encodingMap, path + "1");
     }
 
-    public static void writeToFile(String encoded, String file) {
+    public void writeToFile(String encoded, String file) {
         BitSet bitset = new BitSet(encoded.length());
         for (int i = 0; i < encoded.length(); ++i) {
             if (encoded.charAt(i) == '1') bitset.set(i);
@@ -73,9 +87,14 @@ public class Encoder {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
     }
 
-    public static String readFromFile(File file) {
+    public String readFromFile() {
+
+
+
         if (file.getName().length() < 4 || !file.getName().endsWith(".cmp")) return null;
 
         BitSet bitset = null;
@@ -94,8 +113,8 @@ public class Encoder {
         return bits.toString();
     }
 
-    public static void decompress(File file) throws IOException {
-        String encoded = readFromFile(file);
+    public void decompress() throws IOException {
+        String encoded = readFromFile();
 
         if (encoded == null) {
             System.out.println("ERROR: Invalid File Type");

@@ -3,8 +3,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
-import java.util.List;
 
 public class frontend extends JPanel implements ActionListener {
 
@@ -13,7 +13,7 @@ public class frontend extends JPanel implements ActionListener {
     private JButton cancelButton;
 
     private File file;
-    private List<File> files;
+//    private List<File> files;
     private JLabel labelFile;
 
     private JProgressBar jProgressBar;
@@ -90,31 +90,31 @@ public class frontend extends JPanel implements ActionListener {
     }
 
 
-    private List<File> makingFileList(File fileFolder, List<File> files){
-
-        if(fileFolder.isDirectory()){
-
-            File[] filesArray = fileFolder.listFiles();
-
-            for(File file: filesArray){
-
-                if(fileFolder.isDirectory()){
-                    makingFileList(file,files);
-                } else {
-                    files.add(file);
-                }
-
-            }
-            return files;
-
-        } else {
-
-            files.add(fileFolder);
-            return files;
-
-        }
-
-    }
+//    private List<File> makingFileList(File fileFolder, List<File> files){
+//
+//        if(fileFolder.isDirectory()){
+//
+//            File[] filesArray = fileFolder.listFiles();
+//
+//            for(File file: filesArray){
+//
+//                if(fileFolder.isDirectory()){
+//                    makingFileList(file,files);
+//                } else {
+//                    files.add(file);
+//                }
+//
+//            }
+//            return files;
+//
+//        } else {
+//
+//            files.add(fileFolder);
+//            return files;
+//
+//        }
+//
+//    }
 
 
     @Override
@@ -122,24 +122,33 @@ public class frontend extends JPanel implements ActionListener {
 
         if(e.getSource() == codeButton){
             jProgressBar.setIndeterminate(true);
-            files = makingFileList(file, new LinkedList<File>());
-            labelFile.setText(files.size() + "files");
-            jProgressBar.setMaximum(files.size());
+            Coder EnCoder = new Coder(file);
+            try {
+                EnCoder.encode();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+
             jProgressBar.setValue(0);
+
             codeButton.setEnabled(false);
-            //Thread t = new Thread(new HuffmanCentralProcessor(files, filesLabel, progressBar));
-            //t.start();
+            jProgressBar.disable();
+            System.exit(0);
         }
 
         if(e.getSource() == decodeButton){
             jProgressBar.setIndeterminate(true);
-            files = makingFileList(file, new LinkedList<File>());
-            labelFile.setText(files.size() + "files");
-            jProgressBar.setMaximum(files.size());
+            Coder DeCoder = new Coder(file);
+            try {
+                DeCoder.decompress();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+
             jProgressBar.setValue(0);
             decodeButton.setEnabled(false);
-            //Thread t = new Thread(new HuffmanCentralProcessor(files, filesLabel, progressBar));
-            //t.start();
+            jProgressBar.disable();
+            System.exit(0);
         }
 
         if(e.getSource() == cancelButton){
