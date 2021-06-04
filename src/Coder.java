@@ -8,8 +8,6 @@ import java.util.*;
 public class Coder {
 
     private File file;
-    private JLabel jLabel;
-    private JProgressBar progressBar;
 
     public Coder(File file){
 
@@ -64,8 +62,7 @@ public class Coder {
         }
 
         String compressed = header.toString() + encoded.toString();
-        writeToFile(compressed, file.getName()+".cmp");
-
+        writeToFile(compressed, true);
 
     }
 
@@ -77,16 +74,30 @@ public class Coder {
         dfs(tree.right, encodingMap, path + "1");
     }
 
-    public void writeToFile(String encoded, String file) {
+    public void writeToFile(String encoded, boolean checker) {
         BitSet bitset = new BitSet(encoded.length());
         for (int i = 0; i < encoded.length(); ++i) {
             if (encoded.charAt(i) == '1') bitset.set(i);
         }
-        try (ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file))) {
-            os.writeObject(bitset);
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        if(checker){
+
+            try (ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(this.file + ".cmp"))) {
+                os.writeObject(bitset);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+
+            try (FileWriter os = new FileWriter(this.file + ".txt")) {
+                os.write(encoded);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
+
+
 
 
     }
@@ -177,9 +188,14 @@ public class Coder {
             }
         }
 
-        FileWriter fw = new FileWriter(file.getName().substring(0, file.getName().length()-4)+".dp");
-        fw.write(decode);
-        fw.close();
+        System.out.println(decode);
+        writeToFile(decode, false);
+
+//
+//        FileWriter fw = new FileWriter(file.getName().substring(0, file.getName().length()-4)+".dp");
+//        fw.write(decode);
+//        fw.close();
+
     }
 
     private static char[] filetoString(String file) throws IOException {
