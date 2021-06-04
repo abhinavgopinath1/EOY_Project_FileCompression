@@ -1,3 +1,4 @@
 out/
 .idea/
 EOY_Project_FileCompression.iml
+*.txt
